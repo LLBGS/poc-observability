@@ -1,14 +1,13 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
     "module": "commonjs",
     "target": "es6",
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "incremental": true,
     "noImplicitAny": true,
     "sourceMap": true,
-    "strictNullChecks": true,
-    "paths": {
-      "@first-app/*": ["./packages/first-app/src/*"],
-      "@second-app/*": ["./packages/second-app/src/*"]
-    }
+    "strictNullChecks": true
   }
 }
