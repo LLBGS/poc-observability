@@ -33,7 +33,10 @@ export default class ProducerFactory {
     await this.producer.disconnect();
   }
 
-  public async sendBatch(messages: Array<CustomMessageFormat>): Promise<void> {
+  public async sendBatch(
+    topic: string,
+    messages: Array<CustomMessageFormat>
+  ): Promise<void> {
     const kafkaMessages: Array<Message> = messages.map((message) => {
       return {
         key: "key",
@@ -42,7 +45,7 @@ export default class ProducerFactory {
     });
 
     const topicMessages: TopicMessages = {
-      topic: "producer-topic",
+      topic,
       messages: kafkaMessages,
     };
 

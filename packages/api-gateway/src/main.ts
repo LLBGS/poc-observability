@@ -1,13 +1,14 @@
 import "module-alias/register";
-require("dotenv").config({ path: "../.env" });
-import appConfig from "./config/root.config";
+import * as dotenv from "dotenv";
 import { Express } from "express";
-import { closeConnection } from "./infra/database/database";
+import appConfig from "./config/app.config";
+dotenv.config({ path: __dirname + "/../.env" });
 
 const express = require("express");
 const newrelic = require("newrelic");
 const app: Express = express();
-const port = 3000;
+const port = process.env.PORT;
+console.log("Starting API Gateway");
 
 appConfig(app);
 newrelic.instrumentLoadedModule("express", express);
@@ -17,9 +18,7 @@ const server = app.listen(port, () => {
 
 process.on("SIGTERM" || "SIGINT", () => {
   console.log("SIGTERM signal received: closing HTTP server");
-  server.close(() => {
-    closeConnection();
-  });
+  server.close(() => {});
 });
 
 export default app;
