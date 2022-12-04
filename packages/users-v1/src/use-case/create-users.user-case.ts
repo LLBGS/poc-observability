@@ -17,7 +17,7 @@ export class CreateUserUseCase implements UseCase<IUser> {
       const userEntity = await this._createUserMapper.mapFrom(user);
       if (userEntity instanceof CreateUserDTO) {
         const repository = new UserRepository();
-        return await repository.createUser(userEntity);
+        return await repository.create(userEntity);
       } else {
         res.status(400).json(userEntity);
       }
