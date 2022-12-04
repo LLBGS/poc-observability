@@ -1,0 +1,14 @@
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "main": "main.js",
+  "author": "\"LLBGS <lucasllbgs@gmail.com>\"",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "kafkajs": "^2.2.3"
+  },
+  "devDependencies": {
+    "@types/kafkajs": "^1.9.0"
+  }
+}
