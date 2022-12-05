@@ -5,10 +5,11 @@ import {
   Kafka,
   EachMessagePayload,
 } from "kafkajs";
+import { TMessagePayload } from "../core/domain/message-payload.type";
 
 export default class UserKafkaConsumer {
   private kafkaConsumer: Consumer;
-  private messageProcessor: any;
+  private messageProcessor: TMessagePayload;
 
   public constructor(messageProcessor?: any) {
     this.messageProcessor = messageProcessor;
@@ -38,6 +39,7 @@ export default class UserKafkaConsumer {
   }
 
   public async startBatchConsumer(): Promise<void> {
+    let res: TMessagePayload = { useCase: "", message: {} };
     const topic: ConsumerSubscribeTopics = {
       topics: ["poc.user.service"],
       fromBeginning: false,
@@ -51,7 +53,14 @@ export default class UserKafkaConsumer {
           const { batch } = eachBatchPayload;
           for (const message of batch.messages) {
             const prefix = `${batch.topic}[${batch.partition} | ${message.offset}] / ${message.timestamp}`;
-            console.log(`- ${prefix} ${message.key}#${message.value}`);
+            console.log(
+              `{\n\tprefix: ${prefix}\n\tmessage: ${message.value}\n\tkey: ${message.key}`
+            );
+            res = {
+              useCase: message.key?.toString() || "",
+              message: JSON.parse(String(message.value)),
+            };
+            this.messageProcessor = res;
           }
         },
       });

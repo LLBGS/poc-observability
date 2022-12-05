@@ -7,11 +7,15 @@
   "private": true,
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/main.js",
+    "start": "node --require './dist/infra/telemetry/tracing.js' dist/main.js",
     "start:newrelic": "node -r newrelic dist/main.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/main.js\""
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -r './dist/infra/telemetry/tracing.js' -q dist/main.js\""
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.3.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.35.0",
+    "@opentelemetry/exporter-collector": "^0.25.0",
+    "@opentelemetry/sdk-node": "^0.34.0",
     "body-parser": "^1.20.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
@@ -20,7 +24,9 @@
     "express": "^4.18.2",
     "kafkajs": "^2.2.3",
     "module-alias": "^2.2.2",
-    "newrelic": "^9.7.0"
+    "newrelic": "^9.7.0",
+    "opentelemetry-exporter-datadog": "^0.2.0",
+    "opentelemetry-instrumentation-kafkajs": "^0.34.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",

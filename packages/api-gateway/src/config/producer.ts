@@ -35,11 +35,12 @@ export default class ProducerFactory {
 
   public async sendBatch(
     topic: string,
+    useCase: string,
     messages: Array<CustomMessageFormat>
   ): Promise<void> {
     const kafkaMessages: Array<Message> = messages.map((message) => {
       return {
-        key: "key",
+        key: useCase,
         value: JSON.stringify(message),
       };
     });
@@ -48,7 +49,7 @@ export default class ProducerFactory {
       topic,
       messages: kafkaMessages,
     };
-
+    console.log("topicMessages: ", topicMessages);
     const batch: ProducerBatch = {
       topicMessages: [topicMessages],
     };
