@@ -1,18 +1,17 @@
-import * as dotenv from "dotenv";
+require("@aspecto/opentelemetry")({
+  aspectoAuth: process.env.ASPECTO_API_KEY,
+});
 import "module-alias/register";
-import appConfig from "./config/root.config";
+import * as dotenv from "dotenv";
 import { Express } from "express";
-import { closeConnection } from "./infra/database/database";
-
+import appConfig from "./config/root.config";
 dotenv.config({ path: __dirname + "/../.env" });
-
+import { closeConnection } from "./infra/database/database";
 const express = require("express");
-const newrelic = require("newrelic");
 const app: Express = express();
 const port = process.env.PORT;
 
 appConfig(app);
-newrelic.instrumentLoadedModule("express", express);
 const server = app.listen(port, () => {
   console.log(`User V1 listining in port ${port}`);
 });

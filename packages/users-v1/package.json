@@ -7,15 +7,18 @@
   "private": true,
   "scripts": {
     "build": "npx tsc",
-    "start": "node --require './dist/infra/telemetry/tracing.js' dist/main.js",
-    "start:newrelic": "node -r newrelic dist/main.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -r './dist/infra/telemetry/tracing.js' -q dist/main.js\""
+    "start": "ASPECTO_API_KEY=b14a1453-ba63-4703-a55f-99c265fd5042 node dist/main.js",
+    "dev": "concurrently \"npx tsc --watch\" \"ASPECTO_API_KEY=b14a1453-ba63-4703-a55f-99c265fd5042 nodemon -r './dist/infra/telemetry/tracing.js' -q dist/main.js\""
   },
   "dependencies": {
-    "@opentelemetry/api": "^1.3.0",
-    "@opentelemetry/auto-instrumentations-node": "^0.35.0",
+    "@aspecto/opentelemetry": "^0.0.139",
+    "@opentelemetry/auto-instrumentations-node": "0.34.0",
     "@opentelemetry/exporter-collector": "^0.25.0",
-    "@opentelemetry/sdk-node": "^0.34.0",
+    "@opentelemetry/instrumentation": "^0.34.0",
+    "@opentelemetry/resources": "^1.8.0",
+    "@opentelemetry/sdk-trace-base": "^1.8.0",
+    "@opentelemetry/sdk-trace-node": "^1.8.0",
+    "@opentelemetry/semantic-conventions": "^1.8.0",
     "body-parser": "^1.20.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
@@ -23,15 +26,15 @@
     "cross-env": "5.0.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "kafkajs": "^2.2.3",
     "module-alias": "^2.2.2",
     "mongoose": "^6.7.5",
-    "newrelic": "^9.7.0",
-    "opentelemetry-exporter-datadog": "^0.2.0",
     "opentelemetry-instrumentation-kafkajs": "^0.34.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.14",
+    "@types/kafkajs": "^1.9.0",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^18.11.10",
     "@types/validator": "^13.7.10",

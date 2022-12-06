@@ -54,7 +54,7 @@ export default class UserKafkaConsumer {
           for (const message of batch.messages) {
             const prefix = `${batch.topic}[${batch.partition} | ${message.offset}] / ${message.timestamp}`;
             console.log(
-              `{\n\tprefix: ${prefix}\n\tmessage: ${message.value}\n\tkey: ${message.key}`
+              `{\n\tprefix: ${prefix}\n\tmessage: ${message.value}\n\tkey: ${message.key}\n}`
             );
             res = {
               useCase: message.key?.toString() || "",

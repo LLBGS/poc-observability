@@ -1,60 +1,38 @@
-/* tracing.js */
+const { registerInstrumentations } = require("@opentelemetry/instrumentation");
+const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
+const { Resource } = require("@opentelemetry/resources");
+const {
+  SemanticResourceAttributes,
+} = require("@opentelemetry/semantic-conventions");
+const { SimpleSpanProcessor } = require("@opentelemetry/sdk-trace-base");
+const { CollectorTraceExporter } = require("@opentelemetry/exporter-collector");
 const {
   KafkaJsInstrumentation,
 } = require("opentelemetry-instrumentation-kafkajs");
-
 const {
-  DatadogSpanProcessor,
-  DatadogExporter,
-  DatadogProbabilitySampler,
-  DatadogPropagator,
-} = require("opentelemetry-exporter-datadog");
-
-const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
-// Require dependencies
-const opentelemetry = require("@opentelemetry/sdk-node");
-
-const tracerProvider = new NodeTracerProvider({
-  // be sure to disable old plugin
-  plugins: {
-    kafkajs: { enabled: false, path: "opentelemetry-plugin-kafkajs" },
-  },
+  getNodeAutoInstrumentations,
+} = require("@opentelemetry/auto-instrumentations-node");
+const provider = new NodeTracerProvider({
+  resource: new Resource({
+    [SemanticResourceAttributes.SERVICE_NAME]: "uses-v1-service", // service name is required
+  }),
 });
 
-const sdk = new opentelemetry.NodeSDK({
-  tracerProvider,
-  traceExporter: new opentelemetry.tracing.ConsoleSpanExporter(),
+provider.register();
+provider.addSpanProcessor(
+  new SimpleSpanProcessor(
+    new CollectorTraceExporter({
+      url: "https://otelcol.aspecto.io/v1/trace",
+      headers: {
+        // Aspecto API-Key is required
+        Authorization: "b14a1453-ba63-4703-a55f-99c265fd5042",
+      },
+    })
+  )
+);
+registerInstrumentations({
   instrumentations: [
-    new KafkaJsInstrumentation({
-      // see kafkajs instrumentation docs for available configuration
-    }),
+    getNodeAutoInstrumentations(),
+    new KafkaJsInstrumentation({}),
   ],
 });
-
-/**
- * dataDogTracing - Datadog tracing configuration
- * @param {string} serviceName - The name of the service
- * @param {string} agentUrl - The url of the agent
- * @param {string} tags - The tags to be added to the spans
- * @param {string} env - The environment of the service
- * @param {string} version - The version of the service
- * @returns {object} - The datadog exporter
- */
-
-const exporterOptions = {
-  serviceName: "user-v1", // optional
-  agentUrl: "http://localhost:8126", // optional
-  tags: "example_key:example_value,example_key_two:value_two", // optional
-  env: "develop", // optional
-  version: "1.0", // optional
-};
-
-const exporter = new DatadogExporter(exporterOptions);
-const processor = new DatadogSpanProcessor(exporter);
-tracerProvider.addSpanProcessor(processor);
-tracerProvider.register({
-  propagator: new DatadogPropagator(),
-  sampler: new DatadogProbabilitySampler(1),
-});
-
-sdk.start();
