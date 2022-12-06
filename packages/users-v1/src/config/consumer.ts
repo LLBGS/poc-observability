@@ -5,14 +5,17 @@ import {
   Kafka,
   EachMessagePayload,
 } from "kafkajs";
+import { BehaviorSubject } from "rxjs";
 import { TMessagePayload } from "../core/domain/message-payload.type";
 
 export default class UserKafkaConsumer {
   private kafkaConsumer: Consumer;
-  private messageProcessor: TMessagePayload;
+  private messageProcessorSubject = new BehaviorSubject<TMessagePayload | null>(
+    null
+  );
+  public messageProcessor$ = this.messageProcessorSubject.asObservable();
 
   public constructor(messageProcessor?: any) {
-    this.messageProcessor = messageProcessor;
     this.kafkaConsumer = this.createKafkaConsumer();
   }
 
@@ -31,6 +34,10 @@ export default class UserKafkaConsumer {
           const { topic, partition, message } = messagePayload;
           const prefix = `${topic}[${partition} | ${message.offset}] / ${message.timestamp}`;
           console.log(`- ${prefix} ${message.key}#${message.value}`);
+          this.messageProcessorSubject.next({
+            useCase: message.key?.toString() || "",
+            message: JSON.parse(String(message.value)),
+          });
         },
       });
     } catch (error) {
@@ -60,7 +67,7 @@ export default class UserKafkaConsumer {
               useCase: message.key?.toString() || "",
               message: JSON.parse(String(message.value)),
             };
-            this.messageProcessor = res;
+            this.messageProcessorSubject.next(res);
           }
         },
       });

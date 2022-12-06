@@ -12,17 +12,17 @@ export class CreateUserUseCase implements UseCase<IUser> {
     this._createUserMapper = new CreateUserMapper();
   }
 
-  async execute(user: IUser, res: Response): Promise<void | IUser | IUser[]> {
+  async execute(user: IUser): Promise<void | IUser | IUser[]> {
     try {
       const userEntity = await this._createUserMapper.mapFrom(user);
       if (userEntity instanceof CreateUserDTO) {
         const repository = new UserRepository();
         return await repository.create(userEntity);
       } else {
-        res.status(400).json(userEntity);
+        return userEntity;
       }
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      throw new Error("Error: " + error);
     }
   }
 }

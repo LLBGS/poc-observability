@@ -29,7 +29,8 @@
     "kafkajs": "^2.2.3",
     "module-alias": "^2.2.2",
     "mongoose": "^6.7.5",
-    "opentelemetry-instrumentation-kafkajs": "^0.34.0"
+    "opentelemetry-instrumentation-kafkajs": "^0.34.0",
+    "rxjs": "^7.6.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",

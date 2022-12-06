@@ -5,7 +5,7 @@ const usersRouter = Router();
 usersRouter.post("/", async (req, res) => {
   const { body } = req;
   const usersUseCase = new CreateUserUseCase();
-  const users = await usersUseCase.execute({ ...body }, res);
+  const users = await usersUseCase.execute({ ...body });
   res.json(users);
 });
 
