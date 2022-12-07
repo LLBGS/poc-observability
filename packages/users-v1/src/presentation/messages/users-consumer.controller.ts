@@ -23,4 +23,20 @@ export default class UsersConsumerController {
     const users = await usersUseCase.execute({ ...payload });
     console.log("user created", users);
   }
+
+  public async updateOne(payload: any): Promise<void> {
+    console.log("payload to update an user", payload);
+  }
+
+  public async findAll(payload: any): Promise<void> {
+    console.log("payload to find all users", payload);
+  }
+
+  public async findById(payload: any): Promise<void> {
+    console.log("payload to find an user by id", payload);
+  }
+
+  public async deleteOne(payload: any): Promise<void> {
+    console.log("payload to delete an user", payload);
+  }
 }
